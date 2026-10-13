@@ -232,11 +232,7 @@ struct SettingsView: View {
                 .padding(.vertical, 6)
                 .background(Capsule().fill(Color.groove.opacity(isHoveringQuit ? 1 : 0)))
                 .contentShape(Capsule())
-                .onHover { isHovering in
-                    isHoveringQuit = isHovering
-                    // ponytail: push/pop pair; .pointerStyle(.link) replaces it once the app targets macOS 15.
-                    if isHovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
-                }
+                .onHover { isHoveringQuit = $0 }
                 .animation(.easeOut(duration: 0.15), value: isHoveringQuit)
                 .frame(maxWidth: .infinity)
         }
