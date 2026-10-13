@@ -202,6 +202,7 @@ struct StepRing: View {
 struct SettingsView: View {
     @Binding var goal: Int
     @Binding var startSpeedKmh: Double
+    @State private var isHoveringQuit = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -224,8 +225,19 @@ struct SettingsView: View {
             }
             Button("Quit WalkingPad", systemImage: "power") { NSApplication.shared.terminate(nil) }
                 .buttonStyle(.plain)
-                .font(.system(size: 12))
-                .foregroundStyle(Color.muted)
+                .focusable(false)
+                .font(.system(size: 12, weight: isHoveringQuit ? .semibold : .regular))
+                .foregroundStyle(isHoveringQuit ? Color.stopDark : Color.muted)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(Capsule().fill(Color.groove.opacity(isHoveringQuit ? 1 : 0)))
+                .contentShape(Capsule())
+                .onHover { isHovering in
+                    isHoveringQuit = isHovering
+                    // ponytail: push/pop pair; .pointerStyle(.link) replaces it once the app targets macOS 15.
+                    if isHovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                }
+                .animation(.easeOut(duration: 0.15), value: isHoveringQuit)
                 .frame(maxWidth: .infinity)
         }
         .padding(18)
