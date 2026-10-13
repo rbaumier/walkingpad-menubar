@@ -217,13 +217,16 @@ struct SettingsView: View {
                 }
             }
             setting("Start / stop shortcut") {
-                KeyboardShortcuts.Recorder(for: .toggleBelt)
+                PebbleRecorder()
+                    .frame(maxWidth: .infinity, minHeight: 30, maxHeight: 30)
+                    .padding(4)
+                    .background(Capsule().fill(Color.groove.shadow(.inner(color: .warmShadow.opacity(0.22), radius: 3, y: 2))))
             }
-            Divider()
             Button("Quit WalkingPad", systemImage: "power") { NSApplication.shared.terminate(nil) }
                 .buttonStyle(.plain)
                 .font(.system(size: 12))
                 .foregroundStyle(Color.muted)
+                .frame(maxWidth: .infinity)
         }
         .padding(18)
         .frame(width: 260)
@@ -239,6 +242,23 @@ struct SettingsView: View {
             content()
         }
     }
+}
+
+/// The shortcut recorder stripped of its search-field bezel, so it sits in the same groove as the steppers.
+struct PebbleRecorder: NSViewRepresentable {
+    func makeNSView(context: Context) -> KeyboardShortcuts.RecorderCocoa {
+        let recorder = KeyboardShortcuts.RecorderCocoa(for: .toggleBelt)
+        recorder.isBezeled = false
+        recorder.isBordered = false
+        recorder.drawsBackground = false
+        recorder.focusRingType = .none
+        recorder.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        let bold = NSFont.systemFont(ofSize: 17, weight: .bold)
+        recorder.font = bold.fontDescriptor.withDesign(.rounded).flatMap { NSFont(descriptor: $0, size: 17) } ?? bold
+        return recorder
+    }
+
+    func updateNSView(_ recorder: KeyboardShortcuts.RecorderCocoa, context: Context) {}
 }
 
 /// A value set in a groove between two raised pebble buttons; `step` receives -1 or +1.
