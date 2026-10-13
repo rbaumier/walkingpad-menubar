@@ -75,8 +75,9 @@ struct PanelView: View {
             Spacer()
             Button("Settings", systemImage: "gearshape") { isShowingSettings = true }
                 .labelStyle(.iconOnly)
-                .buttonStyle(.borderless)
-                .focusEffectDisabled()
+                .buttonStyle(.plain)
+                // The panel gives this first button keyboard focus on open; focusEffectDisabled alone still drew the ring.
+                .focusable(false)
                 .font(.system(size: 15))
                 .foregroundStyle(Color.muted)
                 .popover(isPresented: $isShowingSettings, arrowEdge: .bottom) {
